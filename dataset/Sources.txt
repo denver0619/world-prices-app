@@ -1,0 +1,2 @@
+DATASET
+https://ec.europa.eu/eurostat/databrowser/view/PRC_HICP_MIDX__custom_1362623/bookmark/table?lang=en&bookmarkId=0cc8ef75-35a0-44ce-a5ad-af43d5337d75
