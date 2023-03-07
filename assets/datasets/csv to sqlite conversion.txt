@@ -1,0 +1,4 @@
+.mode csv
+.import <file location> <table name>
+.schema <table name> #to check if it exist
+.save <file name>
