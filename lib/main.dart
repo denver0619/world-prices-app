@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'dart:async' show Future;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:sqflite/sqflite.dart';
+import 'package:world_prices_app/DatabaseContent.dart';
+import 'package:world_prices_app/DatabaseHelper.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -31,32 +34,36 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late Future<Database> textDB;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    textDB = loadDataBase();
-  }
-
-  Future<Database> loadDataBase() async {
-    return await openDatabase('assets/datasets-uncompressed/europe/europe_price_index_all.sql3');;
-  }
 
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: FutureBuilder(
-        future: textDB,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-          } else {
-            return CircularProgressIndicator();
-          }
-        },
+      body: Center(
+        child: FutureBuilder<List<DatabaseContent>>(
+          future: DatabaseHelper.instance.getDatabaseContent(),
+          builder: (context, AsyncSnapshot<List<DatabaseContent>> snapshot) {
+            debugPrint("!!!!! "+"Snapshot has data ? " + snapshot.hasData.toString());
+            if (snapshot.hasData) {
+              return ListView(
+                children: snapshot.data!.map((contents) {
+                  return ListTile(
+                    title: Text("${contents.last_update} "
+                        "${contents.geo} "
+                        "${contents.time_period} "
+                        "${contents.obs_value} "
+                        "${contents.obs_flag} "),
+                  );
+                }).toList(),
+              );
+            } else {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
+        ),
       ),
     );
   }
