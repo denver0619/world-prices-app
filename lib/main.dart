@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'dart:async' show Future;
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:sqflite/sqflite.dart';
-import 'package:world_prices_app/DatabaseContent.dart';
-import 'package:world_prices_app/DatabaseHelper.dart';
+import 'package:world_prices_app/country_group/europe_group.dart';
+import 'package:world_prices_app/database/database_content.dart';
+import 'package:world_prices_app/database/database_helper.dart';
+import 'package:world_prices_app/loading_sliver.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,37 +33,49 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late Future<List<DatabaseContent>> europe;
 
+  @override
+  void initState() {
+    super.initState();
+    europe = DatabaseHelper.instance.getDatabaseContent();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: FutureBuilder<List<DatabaseContent>>(
-          future: DatabaseHelper.instance.getDatabaseContent(),
-          builder: (context, AsyncSnapshot<List<DatabaseContent>> snapshot) {
-            debugPrint("!!!!! "+"Snapshot has data ? " + snapshot.hasData.toString());
-            if (snapshot.hasData) {
-              return ListView(
-                children: snapshot.data!.map((contents) {
-                  return ListTile(
-                    title: Text("${contents.last_update} "
-                        "${contents.geo} "
-                        "${contents.time_period} "
-                        "${contents.obs_value} "
-                        "${contents.obs_flag} "),
-                  );
-                }).toList(),
-              );
-            } else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          },
+      body: Column(children: [
+        Expanded(
+          child: CustomScrollView(
+            slivers: <Widget>[
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  addAutomaticKeepAlives: true,
+                  addRepaintBoundaries: true,
+                  addSemanticIndexes: true,
+                  childCount: 1,
+                  (context, index) => const Text("Europe"),
+                ),
+              ),
+              FutureBuilder(
+                future: europe,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    debugPrint(
+                        "!!!!! snapshot length: ${snapshot.data!.length}");
+                    return EuropeGroup(data: snapshot.data!);
+                  } else {
+                    return const LoadingSliver();
+                  }
+                },
+              )
+            ],
+          ),
         ),
-      ),
+      ]),
     );
   }
 }
