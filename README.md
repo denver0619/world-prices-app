@@ -1,6 +1,7 @@
 # world_prices_app
 
 A new Flutter project.
+flutter version Flutter 3.7.6 
 
 ## Getting Started
 
