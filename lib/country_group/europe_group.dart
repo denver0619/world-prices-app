@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:world_prices_app/database/constants.dart';
 import 'package:world_prices_app/database/database_content.dart';
 import 'package:world_prices_app/database/database_helper.dart';
 
 class EuropeGroup extends StatefulWidget {
-  final List<DatabaseContent> data;
-  const EuropeGroup({super.key, required this.data});
+  const EuropeGroup({super.key});
   @override
   State<EuropeGroup> createState() => _EuropeGroupState();
 }
@@ -13,33 +13,18 @@ class _EuropeGroupState extends State<EuropeGroup> {
   SliverGridDelegate gridDelegate =
       const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2);
 
-  int _childCount = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _childCount = widget.data.length;
-  }
-
   @override
   Widget build(BuildContext context) {
-    debugPrint("!!!!! child Length: $_childCount");
-    debugPrint("!!!!! data Length: ${widget.data.length}");
     return SliverGrid(
         delegate: SliverChildBuilderDelegate(
           addAutomaticKeepAlives: true,
           addRepaintBoundaries: true,
           addSemanticIndexes: true,
-          childCount: _childCount,
+          childCount: europeCountries.length,
           (context, index) {
-            DatabaseContent current = widget.data[index];
-            debugPrint("$index");
+            String current = europeCountries[index];
             return Card(
-              child: Text("${current.last_update} "
-                  "${current.geo} "
-                  "${current.time_period} "
-                  "${current.obs_value} "
-                  "${current.obs_flag} "),
+              child: Text(europeEq[current]![0]),
             );
           },
         ),

@@ -33,14 +33,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late Future<List<DatabaseContent>> europe;
-
-  @override
-  void initState() {
-    super.initState();
-    europe = DatabaseHelper.instance.getDatabaseContent();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,18 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   (context, index) => const Text("Europe"),
                 ),
               ),
-              FutureBuilder(
-                future: europe,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    debugPrint(
-                        "!!!!! snapshot length: ${snapshot.data!.length}");
-                    return EuropeGroup(data: snapshot.data!);
-                  } else {
-                    return const LoadingSliver();
-                  }
-                },
-              )
+              const EuropeGroup(),
             ],
           ),
         ),
