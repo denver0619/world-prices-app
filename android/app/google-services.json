@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "1036443731291",
-    "project_id": "world-price-app",
-    "storage_bucket": "world-price-app.appspot.com"
+    "project_number": "270720532838",
+    "project_id": "world-price-app-606f1",
+    "storage_bucket": "world-price-app-606f1.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1036443731291:android:06c7adc4d286f37d51067e",
+        "mobilesdk_app_id": "1:270720532838:android:0d89a07e3ddf16bc2388a7",
         "android_client_info": {
           "package_name": "com.example.world_prices_app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1036443731291-j0f1u30ac6qmng573nlohjedus92df5k.apps.googleusercontent.com",
+          "client_id": "270720532838-9th10hss02plm5hiu03mu49bugohsi6a.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDYOvNMgs0Aqi2smbhmzohxOyfMJ_HhZak"
+          "current_key": "AIzaSyAO2izR9rRowevuU6QxfkW7wJg2kG5GPSU"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1036443731291-j0f1u30ac6qmng573nlohjedus92df5k.apps.googleusercontent.com",
+              "client_id": "270720532838-9th10hss02plm5hiu03mu49bugohsi6a.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

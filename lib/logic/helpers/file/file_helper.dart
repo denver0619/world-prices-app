@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
 class FileHelper {
-  // FileHelper._privateConstructor();
-  // static final FileHelper instance = FileHelper._privateConstructor();
+  FileHelper._privateConstructor();
+  static final FileHelper instance = FileHelper._privateConstructor();
 
   Future<bool> exists(String name) async {
     final privateStorage = await getExternalStorageDirectory();

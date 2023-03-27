@@ -44,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Column(children: [
         Expanded(
           child: CustomScrollView(
-            cacheExtent: 500,
+            cacheExtent: 1000,
             slivers: <Widget>[
               SliverList(
                 delegate: SliverChildBuilderDelegate(

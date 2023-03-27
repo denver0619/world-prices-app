@@ -6,7 +6,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:world_prices_app/constants.dart';
 import 'package:world_prices_app/logic/helpers/file/file_helper.dart';
 import 'package:world_prices_app/logic/helpers/firebase/firebase_helper.dart';
-import 'dart:convert';
 
 class EuropeGroup extends StatefulWidget {
   const EuropeGroup({super.key});
@@ -15,14 +14,13 @@ class EuropeGroup extends StatefulWidget {
 }
 
 class _EuropeGroupState extends State<EuropeGroup> {
-  FileHelper fileHelper = FileHelper();
   late List<Stream<bool>>? streamList;
 
   @override
   void initState() {
     super.initState();
     List<Stream<bool>> temp = List.generate(europeCountries.length, (index) {
-      return FileHelper()
+      return FileHelper.instance
           .existsStream(europeEq[europeCountries[index]]![2])
           .asBroadcastStream();
     });
@@ -79,7 +77,8 @@ class _EuropeGroupState extends State<EuropeGroup> {
               onTap: () {
                 final firebaseRef = europeEq[current]![1];
                 final name = europeEq[current]![2];
-                final fileExist = fileHelper.exists(europeEq[current]![2]);
+                final fileExist =
+                    FileHelper.instance.exists(europeEq[current]![2]);
                 fileExist.then(
                   (value) {
                     if (value) {
@@ -182,6 +181,7 @@ class _EuropeGroupState extends State<EuropeGroup> {
         );
       },
     );
+    await Future.delayed(Duration(seconds: 1));
     if (context.mounted) {
       Navigator.of(context).pop();
     }
