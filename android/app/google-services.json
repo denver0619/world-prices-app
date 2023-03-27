@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1036443731291",
+    "project_id": "world-price-app",
+    "storage_bucket": "world-price-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1036443731291:android:06c7adc4d286f37d51067e",
+        "android_client_info": {
+          "package_name": "com.example.world_prices_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1036443731291-j0f1u30ac6qmng573nlohjedus92df5k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYOvNMgs0Aqi2smbhmzohxOyfMJ_HhZak"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1036443731291-j0f1u30ac6qmng573nlohjedus92df5k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

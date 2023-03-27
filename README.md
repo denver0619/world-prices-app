@@ -2,6 +2,7 @@
 
 A new Flutter project.
 flutter version Flutter 3.7.6 
+Dart 2.19.3 • DevTools 2.20.1
 
 ## Getting Started
 

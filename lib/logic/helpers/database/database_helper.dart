@@ -1,8 +1,12 @@
+import 'dart:convert';
 import 'dart:io' as IO;
+import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'database_content.dart';
 
 // class DatabaseHelper {
 //   DatabaseHelper._privateConstructor();
@@ -49,17 +53,12 @@ import 'package:path_provider/path_provider.dart';
 // }
 
 abstract class DatabaseHelper {
-
   Future<IO.File?> downloadFile(String url, String path);
-
-  Future<List<String>> getCountries(String txt);
+  Future<List<DatabaseContent>> getDatabaseContent();
 }
 
 class DatabaseHelperEurope extends DatabaseHelper {
-  // //creates a private instance of this class
-  DatabaseHelperEurope._privateConstructor();
-  static final DatabaseHelperEurope instance =
-      DatabaseHelperEurope._privateConstructor();
+  DatabaseHelperEurope(this.code);
 
   //initializes the database
   static Database? _database;
@@ -67,20 +66,21 @@ class DatabaseHelperEurope extends DatabaseHelper {
     return _database ??= await _initDatabase();
   }
 
-  String error = "No errors";
+  String code;
+  String error = "";
   final String baseUrl = "https://ec.europa.eu/eurostat/api/dissemination";
   final dio = Dio();
 
   Future<Database> _initDatabase() async {
     var databasesPath = await getExternalStorageDirectory();
-    var path = join(databasesPath!.path, "prc_hicp_midx_linear.db");
+    var path = join(databasesPath!.path, "$code.csv");
     var exists = await databaseExists(path);
 
     if (!exists) {
       String url =
-          "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/PRC_HICP_MIDX?format=SDMX-CSV";
+          "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/PRC_HICP_MIDX/.I15..$code?format=JSON&lang=en";
       try {
-        downloadFile(url, databasesPath!.path);
+        downloadFile(url, databasesPath.path);
       } catch (e) {
         error = e.toString();
       }
@@ -91,24 +91,19 @@ class DatabaseHelperEurope extends DatabaseHelper {
 
   @override
   Future<IO.File?> downloadFile(String url, String path) async {
-    final file = IO.File(join(path, "prc_hicp_midx_linear.db"));
-
-    final response = await Dio().get(url);
-
-    final raf = file.openSync(mode: IO.FileMode.write);
-    raf.writeByteSync(response.data);
-    await raf.close();
+    final file = IO.File(join(path, "$code.csv"));
 
     return file;
   }
 
   @override
-  Future<List<String>> getCountries(String txt) async {
-    final response = await dio.fetch(
-      RequestOptions(
-        baseUrl: baseUrl,
-      ),
-    );
-    return [];
+  Future<List<DatabaseContent>> getDatabaseContent() async {
+    Database db = await database;
+    var databaseContents = await db.rawQuery(
+        "SELECT * FROM europe_price_index_all WHERE geo like 'DE' and coicop like 'CP00' and unit like 'I15';");
+    List<DatabaseContent> databaseContentList = databaseContents.isNotEmpty
+        ? databaseContents.map((e) => DatabaseContent.fromMap(e)).toList()
+        : [];
+    return databaseContentList;
   }
 }
