@@ -1,12 +1,10 @@
-import 'dart:convert';
-import 'dart:io' as IO;
-import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
+import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'database_content.dart';
+import 'package:path/path.dart';
 
 // class DatabaseHelper {
 //   DatabaseHelper._privateConstructor();
@@ -52,55 +50,43 @@ import 'database_content.dart';
 //   }
 // }
 
-abstract class DatabaseHelper {
-  Future<IO.File?> downloadFile(String url, String path);
-  Future<List<DatabaseContent>> getDatabaseContent();
-}
-
-class DatabaseHelperEurope extends DatabaseHelper {
-  DatabaseHelperEurope(this.code);
+class DatabaseHelperEurope{
+  DatabaseHelperEurope._privateConstructor();
+  static final DatabaseHelperEurope instance = DatabaseHelperEurope._privateConstructor();
 
   //initializes the database
-  static Database? _database;
-  Future<Database> get database async {
-    return _database ??= await _initDatabase();
+  // static Database? _database;
+  Future<Database> getDatabase (String fileName)async {
+    return await initDatabase(fileName);
   }
 
-  String code;
-  String error = "";
-  final String baseUrl = "https://ec.europa.eu/eurostat/api/dissemination";
-  final dio = Dio();
+  // String code;
+  // String name;
+  // String error = "";
 
-  Future<Database> _initDatabase() async {
+  ///file name of the db
+  Future<Database> initDatabase(String fileName) async {
     var databasesPath = await getExternalStorageDirectory();
-    var path = join(databasesPath!.path, "$code.csv");
-    var exists = await databaseExists(path);
+    var path = join(databasesPath!.path, fileName);
+    return await openDatabase(path, readOnly: true);
+  }
 
-    if (!exists) {
-      String url =
-          "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/PRC_HICP_MIDX/.I15..$code?format=JSON&lang=en";
-      try {
-        downloadFile(url, databasesPath.path);
-      } catch (e) {
-        error = e.toString();
-      }
+  ///alpha-2code
+  Future<bool> check(String code, String fileName) async {
+    var db = await getDatabase(fileName);
+    List<Map<String, Object?>> databaseContents;
+    try {
+      databaseContents = await db.rawQuery("select COUNT(*) from ${code}_INDEX");
+      return true;
+    } catch (e) {
+      return false;
     }
-
-    return await openDatabase(path);
   }
 
-  @override
-  Future<IO.File?> downloadFile(String url, String path) async {
-    final file = IO.File(join(path, "$code.csv"));
-
-    return file;
-  }
-
-  @override
-  Future<List<DatabaseContent>> getDatabaseContent() async {
-    Database db = await database;
+  Future<List<DatabaseContent>> getDatabaseContent(String code, String fileName) async {
+    Database db = await getDatabase(fileName);
     var databaseContents = await db.rawQuery(
-        "SELECT * FROM europe_price_index_all WHERE geo like 'DE' and coicop like 'CP00' and unit like 'I15';");
+        "SELECT * FROM ${code}_INDEX");
     List<DatabaseContent> databaseContentList = databaseContents.isNotEmpty
         ? databaseContents.map((e) => DatabaseContent.fromMap(e)).toList()
         : [];
